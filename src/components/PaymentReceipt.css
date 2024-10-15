@@ -1,0 +1,163 @@
+/* Container for the entire receipt page */
+.payment-receipt-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 200%;
+  padding: 20px;
+}
+
+/* Container to hold both receipts side by side */
+.receipts {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 200%;
+  max-width: 1200px; /* Max width for receipts to avoid stretching on larger screens */
+}
+
+/* Styling for individual receipt */
+.receipt {
+  border: 1px solid black;
+  padding: 20px;
+  width: 48%; /* Each receipt takes half of the container */
+  margin: 10px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading section for the receipt */
+.receipt-heading {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.receipt-heading h3 {
+  margin: 0;
+  font-size: 1.5em;
+  text-transform: uppercase;
+}
+
+.receipt-heading h4 {
+  margin: 5px 0;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+/* Header section for date, receipt number, name, and roll number */
+.receipt-header {
+  margin-bottom: 20px;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.header-row h5 {
+  margin: 0;
+  /* font-weight: bold; */
+  font-size: 1em;
+}
+
+.left {
+  width: 48%;
+}
+
+.right {
+  width: 48%;
+  text-align: right;
+}
+
+/* Table styling for the payment details */
+.payment-details-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.payment-details-table th,
+.payment-details-table td {
+  border: 1px solid black;
+  padding: 10px;
+  text-align: left;
+  font-weight: bold;
+}
+
+.payment-details-table th {
+  background-color: #f2f2f2;
+  /* font-weight: ; */
+  font-size: 1.2em;  
+   
+}
+
+.payment-details-table td {
+  background-color: #fff;
+}
+
+.payment-details-table td:nth-child(3) {
+  text-align: right;
+}
+
+/* Footer section for total in words and signature */
+.receipt-body h4 {
+  margin-top: 20px;
+  font-weight: bold;
+  text-align: left;
+}
+
+.header-row p {
+  /* text-align: right; */
+  margin-top: 20px;
+}
+
+.receipt-body p {
+  margin: 10px 0;
+}
+
+/* Print button container */
+.print-button-container {
+  margin-top: 20px;
+}
+
+.print-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.print-button:hover {
+  background-color: #0056b3;
+}
+
+/* Print styles */
+@media print {
+  .print-button-container {
+    display: none;
+  }
+
+  .payment-receipt-container {
+    width: 200%;
+    height: 100%;
+  }
+
+  .receipts {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 180%;
+  }
+
+  .receipt {
+    width: 50%;
+    height: 500px; /* Adjust height as needed */
+    margin: 0;
+    padding: 30px;
+    border: none;
+    box-shadow: none;
+  }
+}
