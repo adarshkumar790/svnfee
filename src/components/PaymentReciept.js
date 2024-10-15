@@ -3,7 +3,7 @@ import { useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './PaymentReceipt.css';
 
-const baseURL = 'https://feebackend.onrender.com';
+const baseURL = 'https://svnfeebackend.onrender.com';
 
 function PaymentReceipt() {
   const { paymentId } = useParams();

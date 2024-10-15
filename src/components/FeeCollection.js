@@ -5,7 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Import Toastify CSS
 import './style.css';  // Import CSS file
-const baseURL = 'https://feebackend.onrender.com'
+const baseURL = 'https://svnfeebackend.onrender.com'
 
 function FeeCollection() {
   const [period, setPeriod] = useState('daily');

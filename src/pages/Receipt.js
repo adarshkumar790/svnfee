@@ -235,7 +235,7 @@ function Receipt({ payment, receiptNo, onSave }) {
 }
 
 
- const baseURL = 'https://feebackend.onrender.com'
+ const baseURL = 'https://svnfeebackend.onrender.com'
 
 function App() {
   const [paymentData, setPaymentData] = useState(null);

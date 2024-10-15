@@ -19,7 +19,7 @@ function FeePage() {
   const [paymentMonth, setPaymentMonth] = useState('');
   const [paymentAmount, setPaymentAmount] = useState('');
   const [newTotalFees, setNewTotalFees] = useState(0);
-  const baseURL = 'https://feebackend.onrender.com'
+  const baseURL = 'https://svnfeebackend.onrender.com'
 
   useEffect(() => {
     axios

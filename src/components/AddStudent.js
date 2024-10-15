@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify'; // Import toastify compo
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for toastify
 import './AddStudent.css'; // Import the CSS file
-const baseURL = 'https://feebackend.onrender.com';
+const baseURL = 'https://svnfeebackend.onrender.com';
 
 function AddStudent() {
   const [name, setName] = useState('');

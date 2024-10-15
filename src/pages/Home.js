@@ -4,7 +4,7 @@ import StudentList from '../components/StudentList';
 import FeeCollection from '../components/FeeCollection';
 import { Link } from 'react-router-dom';
 import './style.css';  // Import CSS file
-const baseURL = 'https://feebackend.onrender.com'
+const baseURL = 'https://svnfeebackend.onrender.com'
 
 
 function Home() {

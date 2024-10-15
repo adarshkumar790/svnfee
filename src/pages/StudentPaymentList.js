@@ -5,7 +5,7 @@ import jsPDF from 'jspdf'; // Import the jsPDF library
 import 'jspdf-autotable'; // Import jsPDF autotable plugin
 import styles from './StudentList.module.css';
 
-const baseURL = 'https://feebackend.onrender.com'
+const baseURL = 'https://svnfeebackend.onrender.com'
 
 function StudentPaymentList() {
   const [receipts, setReceipts] = useState([]);
