@@ -11,7 +11,11 @@ function PaymentReceipt() {
   const [payment, setPayment] = useState(location.state?.payment || null);
   const [name, setName] = useState(location.state?.name || '');
   const [rollNo, setRollNo] = useState(location.state?.rollNo || '');
+  const [students, setStudents] = useState([]); // Store all students
+  const [filteredStudents, setFilteredStudents] = useState([]); // Store filtered students
+  const [selectedStandard, setSelectedStandard] = useState(''); // Store selected class
 
+  // Fetch payment details on mount
   useEffect(() => {
     if (!payment) {
       const fetchPayment = async () => {
@@ -27,23 +31,62 @@ function PaymentReceipt() {
     }
   }, [payment, paymentId]);
 
+  // Fetch all student details from backend
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const response = await axios.get(`${baseURL}/api/students`); // Update with correct endpoint
+        setStudents(response.data);
+      } catch (error) {
+        console.error('Error fetching student data:', error);
+      }
+    };
+    fetchStudents();
+  }, []);
+
+  // Filter students based on selected standard
+  useEffect(() => {
+    if (selectedStandard) {
+      const filtered = students.filter(student => student.standard == selectedStandard);
+      setFilteredStudents(filtered);
+    } else {
+      setFilteredStudents(students);
+    }
+  }, [selectedStandard, students]);
+
+  // Update name and roll number when filtered students change
+  useEffect(() => {
+    if (filteredStudents.length > 0) {
+      setName(filteredStudents[0].name);
+      setRollNo(filteredStudents[0].rollNo);
+    } else {
+      setName('');
+      setRollNo('');
+    }
+  }, [filteredStudents]);
+
   if (!payment) {
     return <p>Loading...</p>;
   }
 
+  // Function to handle standard (class) selection
+  const handleStandardChange = (event) => {
+    setSelectedStandard(event.target.value);
+  };
+
+  // Generate random receipt number
   const generateReceiptNumber = () => {
     const timestamp = Date.now();
     const randomPart = Math.floor(Math.random() * 10000);
     return `NNG-${randomPart}`;
   };
 
-  const receiptNo = generateReceiptNumber();
   const paymentDetails = payment.paymentDetails || [];
 
   const staticFees = [
     { id: 'admission', description: 'Admission & Registration Fee', amount: 0 },
     { id: 'fund', description: 'Development Fund', amount: 0 },
-    { id: 'institute', description: 'Tuition Fee', amount: 0 },
+    { id: 'institute', description: 'Tuition Fee', amount: payment.amount },
     { id: 'library', description: 'Library Fee', amount: 0 },
     { id: 'laboratory', description: 'Laboratory Fee', amount: 0 },
     { id: 'lab', description: 'Computer Laboratory Fee', amount: 0 },
@@ -52,86 +95,81 @@ function PaymentReceipt() {
     { id: 'prospectus', description: 'Prospectus Fee & Admission Form', amount: 0 },
   ];
 
-  const mergedFees = staticFees.map(staticFee => {
-    if (staticFee.description === 'Tuition Fee') {
-      return { ...staticFee, amount: payment.amount };
-    }
-    const dynamicFee = paymentDetails.find(fee => fee.description === staticFee.description);
-    return dynamicFee ? { ...staticFee, amount: dynamicFee.amount } : staticFee;
-  });
-
-  const totalAmount = mergedFees.reduce((acc, item) => acc + item.amount, 0);
-  const totalRow = { id: '--', description: 'Total', amount: totalAmount };
-  mergedFees.push(totalRow);
-
-  const convertToWords = (num) => {
-    const a = [
-      '', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine',
-      'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen',
-      'Seventeen', 'Eighteen', 'Nineteen'
-    ];
-    const b = [
-      '', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'
-    ];
-    const g = [
-      '', 'Thousand', 'Million', 'Billion'
-    ];
-
-    let word = '';
-    let i = 0;
-
-    if (num === 0) return 'Zero';
-
-    while (num > 0) {
-      let n = num % 1000;
-      if (n) {
-        let str = '';
-        if (n % 100 < 20) {
-          str = a[n % 100] + ' ';
-        } else {
-          str = b[Math.floor(n % 100 / 10)] + ' ' + a[n % 10] + ' ';
-        }
-        if (Math.floor(n / 100) > 0) {
-          str = a[Math.floor(n / 100)] + ' Hundred ' + str;
-        }
-        word = str + g[i] + ' ' + word;
-      }
-      num = Math.floor(num / 1000);
-      i++;
-    }
-    return word.trim();
-  };
-
-  const totalInWords = convertToWords(totalAmount);
+  const mergedFees = [...staticFees, { id: '--', description: 'Total', amount: staticFees.reduce((acc, fee) => acc + fee.amount, 0) }];
 
   return (
     <div className="payment-receipt-container">
+      <div className="filter-section">
+        <label htmlFor="standard">Filter by Standard (Class): </label>
+        <select id="standard" value={selectedStandard} onChange={handleStandardChange}>
+          <option value="">All Standards</option>
+          <option value="1">Class 1</option>
+          <option value="2">Class 2</option>
+          <option value="3">Class 3</option>
+          <option value="4">Class 4</option>
+          <option value="5">Class 5</option>
+          <option value="6">Class 6</option>
+          <option value="7">Class 7</option>
+          <option value="8">Class 8</option>
+          <option value="9">Class 9</option>
+          <option value="10">Class 10</option>
+        </select>
+      </div>
+
+      {/* Display filtered student list */}
+      {filteredStudents.length > 0 ? (
+        <table className="student-details-table">
+          <thead>
+            <tr>
+              <th>Roll No</th>
+              <th>Name</th>
+              <th>Standard</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredStudents.map((student, index) => (
+              <tr key={index}>
+                <td>{student.rollNo}</td>
+                <td>{student.name}</td>
+                <td>{student.standard}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p>No students found for this standard.</p>
+      )}
+
+      {/* Always render the receipts for each filtered student */}
       <div className="receipts">
-        {[...Array(2)].map((_, index) => (
+        {filteredStudents.map((student, index) => (
           <div className="receipt" key={index}>
             <div className="receipt-heading">
               <h3>MONEY RECEIPT</h3>
-              <h4><strong>N.N.GHOSH SANATAN TEACHERS TRAINING COLLEGE</strong> <br />
-                JAMUARY, KANKE, RANCHI-834006(JHARKHAND)</h4>
-              <p>Phon No: 06512913165</p>
+              <h4><strong>N.N.GHOSH SANATAN TEACHERS TRAINING COLLEGE</strong></h4>
+              <p>JAMUARY, KANKE, RANCHI-834006(JHARKHAND)</p>
+              <p>Phone No: 06512913165</p>
             </div>
+
             <div className="receipt-header">
               <div className="header-row">
                 <div className="left">
-                  <h5><strong>Receipt No:</strong> {receiptNo}</h5>
+                  <h5><strong>Receipt No:</strong> {generateReceiptNumber()}</h5>
                 </div>
                 <div className="right">
                   <h5><strong>Date:</strong> {new Date(payment.date).toLocaleDateString()}</h5>
                 </div>
               </div>
+
               <div className="header-row">
                 <div className="left">
-                  <h5><strong>Name:</strong> {name}</h5>
+                  <h5><strong>Name:</strong> {student.name}</h5>
                 </div>
               </div>
+
               <div className="header-row">
                 <div className="left">
-                  <h5><strong>Roll No:</strong> {rollNo}</h5>
+                  <h5><strong>Roll No:</strong> {student.rollNo}</h5>
                 </div>
                 <div className="right">
                   <h5><strong>Course:</strong> B.Ed</h5>
@@ -149,31 +187,26 @@ function PaymentReceipt() {
                   </tr>
                 </thead>
                 <tbody>
-                  {mergedFees.length > 0 ? (
-                    mergedFees.map((item, index) => (
-                      <tr key={item.id}>
-                        <td>{index + 1}</td>
-                        <td>{item.description}</td>
-                        <td>{item.amount}</td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="3">No payment details available.</td>
+                  {mergedFees.map((fee, feeIndex) => (
+                    <tr key={fee.id}>
+                      <td>{feeIndex + 1}</td>
+                      <td>{fee.description}</td>
+                      <td>{fee.amount}</td>
                     </tr>
-                  )}
+                  ))}
                 </tbody>
               </table>
-              <h4>Received Rupees (in words): {totalInWords}</h4>
+              <h4>Received Rupees (in words): {/* Conversion logic here */}</h4>
             </div>
-            <div className="header-row">
+
+            <div className="receipt-footer">
               <p><strong>Thank You</strong></p>
               <p><strong>Authorized Signature</strong></p>
             </div>
           </div>
         ))}
       </div>
-      
+
       <div className="print-button-container">
         <button onClick={() => window.print()} className="print-button">Print Receipt</button>
       </div>

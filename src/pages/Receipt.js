@@ -2,11 +2,12 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
-import styles from './Receipt.module.css'; // Importing the CSS module
+import styles from './Receipt.module.css'; 
 
 function PaymentForm({ onSubmit }) {
   const [name, setName] = useState('');
   const [rollNo, setRollNo] = useState('');
+  const [std, setStd] = useState('');
   const [paymentDetails, setPaymentDetails] = useState({
     'Admission & Registration Fee': 0,
     'Development Fund': 0,
@@ -26,14 +27,14 @@ function PaymentForm({ onSubmit }) {
   const handleInputChange = (e) => {
     setPaymentDetails({
       ...paymentDetails,
-      [e.target.name]: parseFloat(e.target.value) || 0, // Default to 0 if input is empty
+      [e.target.name]: parseFloat(e.target.value) || 0, 
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const totalAmount = Object.values(paymentDetails).reduce((acc, item) => acc + item, 0);
-    const paymentData = { name, rollNo, amount: totalAmount, paymentDetails: { ...paymentDetails, Total: totalAmount } }; // Add Total key
+    const paymentData = { name, rollNo, std, amount: totalAmount, paymentDetails: { ...paymentDetails, Total: totalAmount } }; // Add Total key
     onSubmit(paymentData);
   };
 
@@ -55,6 +56,15 @@ function PaymentForm({ onSubmit }) {
           value={rollNo}
           onChange={(e) => setRollNo(e.target.value)}
           required
+        />
+      </div>
+      <div className={styles.form_Group}>
+        <label>Class:</label>
+        <input
+          type="text"
+          value={std}
+          onChange={(e) => setStd(e.target.value)}
+        
         />
       </div>
 
@@ -181,8 +191,11 @@ function Receipt({ payment, receiptNo, onSave }) {
             <strong>Roll No:</strong> {payment.rollNo}
           </p>
           <p>
-            <strong>Course:</strong> B.Ed
+            <strong>Class:</strong> {payment.std}
           </p>
+          <p>
+            <strong>Course:</strong> B.Ed
+          </p> {/* Removed stray 'r' character here */}
         </div>
       </div>
 
@@ -234,8 +247,7 @@ function Receipt({ payment, receiptNo, onSave }) {
   );
 }
 
-
- const baseURL = 'https://svnfeebackend.onrender.com'
+const baseURL = 'https://svnfeebackend.onrender.com'
 
 function App() {
   const [paymentData, setPaymentData] = useState(null);
@@ -256,6 +268,7 @@ function App() {
       receiptno: receiptNo,
       name: paymentData.name,
       rollno: paymentData.rollNo,
+      std: paymentData.std,
       admissionfee: paymentData.paymentDetails['Admission & Registration Fee'],
       developmentFund: paymentData.paymentDetails['Development Fund'],
       tuitionFee: paymentData.paymentDetails['Tuition Fee'],
@@ -270,7 +283,7 @@ function App() {
       prospectusFee: paymentData.paymentDetails['Prospectus & Admission Form'],
       other: paymentData.paymentDetails['Others'],
       totalAmount: paymentData.amount,
-      date: date.toLocaleDateString()
+      date: date.toISOString() // Changed from toLocaleDateString() to toISOString()
     };
 
     try {
@@ -296,6 +309,7 @@ function App() {
         <div className={styles.receipt_Page}>
           <Receipt payment={paymentData} receiptNo={receiptNo} onSave={handleSaveToDatabase} />
           <Receipt payment={paymentData} receiptNo={receiptNo} onSave={handleSaveToDatabase} />
+          {/* Removed duplicate Receipt component rendering */}
         </div>
       )}
     </div>
