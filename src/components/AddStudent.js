@@ -42,7 +42,7 @@ function AddStudent() {
           />
         </div>
         <div>
-          <label>Session</label>
+          <label>Class</label>
           <input 
             type="text" 
             value={studentClass} 

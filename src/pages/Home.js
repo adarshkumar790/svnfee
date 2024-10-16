@@ -29,7 +29,7 @@ function Home() {
         {/* <Link to="/salary" className="generate-receipt-button">SalarySlip</Link> */}
       </div>
       <div className="filter-container">
-        <label>Filter by Session:</label>
+        <label>Filter by Class:</label>
         <input 
           type="text" 
           value={classFilter} 
